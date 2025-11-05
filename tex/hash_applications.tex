@@ -39,11 +39,11 @@ and using the rightmost 20 bytes.
 \subsection{Colliding Addresses}
 
 While each private key corresponds to a unique public key,
-using only 20 bytes of a hash output reduces the unique
-number of addresses to $2^{160}$.
+using only 20 bytes of a hash output reduces the
+number of unique addresses to $2^{160}$.
 Because there are approximately $2^{256}$ unique private and public keys,
 this means there are \emph{many} public keys with the same address;
-a rough estimate would be that there are approximately $2^{96}$ public keys
+a rough estimate would be there are approximately $2^{96}$ public keys
 per address.
 
 The good news is that, due to \Keccak{} being a strong \gls{hash function}
@@ -62,6 +62,46 @@ Considering the belief that performing $2^{128}$ operations is impractical,
 performing $2^{160}$ operations is also impractical.
 Thus, there is little concern for colliding addresses in \gls{ethereum}
 even though they certainly exist.
+
+\subsection{Mixed-case Address Encoding}
+
+Due to how addresses are constructed,
+it is expected that every random 20-byte address will have an associated
+private key\footnote{As noted above, \emph{many} private keys.
+Also, finding an \gls{ethereum} address \emph{without} an associated public key
+would show a \emph{significant weakness} of \Keccak{}.}.
+A \emph{practical} concern is when \emph{copying}
+these addresses \emph{by hand};
+errors can occur, and this is extremely dangerous as there are no ``refunds'' or
+``cancellations'' in
+\gls{ethereum}\footnote{We must note that it is \emph{possible} to ``cancel''
+a bad transaction by replacing it with \emph{another} transaction,
+but this must happen quickly after the bad transaction is sent
+(possibly on the order of seconds or minutes)
+and incurs a nonzero cost.
+Once a transaction has been processed by the Ethereum miners,
+it is impractical to revert it.}.
+If Alice meant to send Ether (the standard currency on \gls{ethereum})
+to Bob's address ending in
+\texttt{...90b7} but instead sent it to \texttt{...90b8},
+Bob will not receive the Ether and there is no way for Alice to get this value
+back\footnote{This Ether should be considered
+lost or destroyed, as the only way to recover the value is to find
+a private key with this address;
+this is impractical.}.
+
+One method to help defend against errors when writing addresses
+is discussed in ERC-55~\cite{ERC-55}
+(Ethereum Request for Comment;
+formally referred to as EIP-55 [Ethereum Improvement Proposal]):
+allow for a checksum \emph{embedded within the address itself}.
+The checksum is encoded within the alphabetic letters within the address;
+specifically, whether the alphabetic letter is uppercase or lowercase.
+The case is determined by the corresponding nibble
+(4 bits; one hexadecimal character)
+of the hashed address (whether the value is between 0--7 (lowercase)
+or 8--15 (uppercase)).
+Reference code is included at~\cite{ERC-55}.
 
 \subsection{Example}
 
@@ -91,11 +131,12 @@ By computing the \Keccak{}-256 hash of this and taking the rightmost
 20 bytes, we see
 
 \begin{equation}
-    \texttt{addr} = \texttt{7691ee0343b9a529675e1a8a70197b3b704f90b7}.
+    \texttt{addr} = \texttt{0x7691Ee0343B9a529675e1A8a70197B3B704f90b7}.
 \end{equation}
 
 \noindent
-This address is much more manageable than the public key.
+This address is much more manageable than the public key;
+this example uses the Mixed-case Address Encoding from~\cite{ERC-55}.
 \end{example}
 
 

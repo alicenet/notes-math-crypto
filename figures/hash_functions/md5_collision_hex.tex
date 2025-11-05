@@ -1,0 +1,25 @@
+\begin{figure}[tp]
+\centering
+\begin{subfigure}{0.465\textwidth}
+    \centering
+    \VerbatimInput[commandchars=\\\{\}]{figures/hash_functions/message1.tex}
+    \caption{Bytes of \texttt{message1.bin} in hexadecimal}
+    \label{fig:message1}
+    \end{subfigure}
+    \vspace{0.5cm}
+
+\begin{subfigure}{0.465\textwidth}
+    \centering
+    \VerbatimInput[commandchars=\\\{\}]{figures/hash_functions/message2.tex}
+    \caption{Bytes of \texttt{message2.bin} in hexadecimal}
+    \label{fig:message2}
+    \end{subfigure}
+
+\caption[Example Messages Producing \MDFive{} Collision]{Here
+    are two different messages which produce the same
+    \MDFive{} hash value:
+    \texttt{008ee33a9d58b51cfeb425b0959121c9}.
+    These messages differ in only 2 hex characters.
+    }
+\label{fig:md5-collision}
+\end{figure}
